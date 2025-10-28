@@ -11,8 +11,14 @@ static ge::graphStatus TilingFunc(gert::TilingContext* context)
     SigmoidCustomTilingData tiling;
     
     // 获取输入张量的形状信息
-    const gert::TensorDesc *inputDesc = context->GetInputTensorDesc(0);
-    int64_t totalElements = inputDesc->GetShapeSize();
+    const gert::StorageShape* inputShape = context->GetInputShape(0);
+    
+    // 计算总元素数量
+    int64_t totalElements = 1;
+    gert::Shape shape = inputShape->GetStorageShape();
+    for (size_t i = 0; i < shape.GetDimNum(); i++) {
+        totalElements *= shape.GetDim(i);
+    }
     
     // 计算总长度
     tiling.set_totalLength(totalElements);
